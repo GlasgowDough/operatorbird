@@ -35,36 +35,27 @@ function updatePipes() {
             x: canvas.width,
             width: 50,
             top: top,
-            bottom: canvas.height - (top + gap)
+            bottom: canvas.height - top - gap
         });
     }
     pipes.forEach(pipe => {
         pipe.x -= 2;
     });
-    pipes = pipes.filter(pipe => pipe.x + pipe.width > 0);
+    pipes = pipes.filter(pipe => pipe.x > -pipe.width);
 }
 
-function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBird();
-    drawPipes();
-}
-
-function update() {
+function updateBird() {
     bird.velocity += bird.gravity;
     bird.y += bird.velocity;
-
-    if (bird.y + bird.height > canvas.height) {
-        bird.y = canvas.height - bird.height;
+    if (bird.y + bird.height > canvas.height || bird.y < 0) {
+        bird.y = 150;
         bird.velocity = 0;
+        pipes = [];
+        frame = 0;
     }
+}
 
-    if (bird.y < 0) {
-        bird.y = 0;
-        bird.velocity = 0;
-    }
-
-    upfunction checkCollision(bird, pipe) {
+function checkCollision(bird, pipe) {
     return (
         bird.x < pipe.x + pipe.width &&
         bird.x + bird.width > pipe.x &&
@@ -75,27 +66,26 @@ function update() {
     );
 }
 
-pipes.forEach(pipe => {
-    if (checkCollision(bird, pipe)) {
-        // Reset the game or handle game over
-        bird.y = 150;
-        bird.velocity = 0;
-        pipes = [];
-        frame = 0;
-    }
-});
-datePipes();
-}
-
-function loop() {
-    draw();
-    update();
+function update() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBird();
+    drawPipes();
+    updatePipes();
+    updateBird();
+    pipes.forEach(pipe => {
+        if (checkCollision(bird, pipe)) {
+            bird.y = 150;
+            bird.velocity = 0;
+            pipes = [];
+            frame = 0;
+        }
+    });
     frame++;
-    requestAnimationFrame(loop);
+    requestAnimationFrame(update);
 }
 
 canvas.addEventListener('click', () => {
     bird.velocity = bird.lift;
 });
 
-loop();
+update();
