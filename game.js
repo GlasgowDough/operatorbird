@@ -64,7 +64,27 @@ function update() {
         bird.velocity = 0;
     }
 
-    updatePipes();
+    upfunction checkCollision(bird, pipe) {
+    return (
+        bird.x < pipe.x + pipe.width &&
+        bird.x + bird.width > pipe.x &&
+        (
+            bird.y < pipe.top ||
+            bird.y + bird.height > canvas.height - pipe.bottom
+        )
+    );
+}
+
+pipes.forEach(pipe => {
+    if (checkCollision(bird, pipe)) {
+        // Reset the game or handle game over
+        bird.y = 150;
+        bird.velocity = 0;
+        pipes = [];
+        frame = 0;
+    }
+});
+datePipes();
 }
 
 function loop() {
