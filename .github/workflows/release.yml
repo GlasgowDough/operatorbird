@@ -9,27 +9,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14.x'
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install electron-builder
 
-    - name: Build Electron app
-      run: npm run build
+      - name: Build electron app
+        run: npm run build
 
-    - name: Package Electron app
-      run: npx electron-builder --win
+      - name: Package Electron app
+        run: npx electron-builder --win
 
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./dist/*.exe
-        asset_name: OperatorBird.exe
-        asset_content_type: application/octet-stream
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: operatorbird
+          path: dist/**/*
