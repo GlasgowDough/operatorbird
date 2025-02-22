@@ -1,0 +1,12 @@
+{
+  "name": "operatorbird",
+  "version": "1.0.0",
+  "description": "A fun variation of Flappy Bird built with Electron.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^25.3.1"
+  }
+}
